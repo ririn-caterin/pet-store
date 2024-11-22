@@ -1,22 +1,30 @@
-"use client"
-import { useSession, signIn, signOut } from "next-auth/react"
+"use client";
 
-export default function LoginButton() {
-  const { data: session, status } = useSession()
+import { Session } from "next-auth";
+import { useSession, signIn, signOut } from "next-auth/react";
 
-  console.log(session, status)
-  if (session) {
+interface LoginButtonProps {
+  serverSession: Session | null;
+}
+
+export default function LoginButton({ serverSession }: LoginButtonProps) {
+  const { data: session } = useSession();
+
+  const activeSession = session || serverSession; 
+
+  if (activeSession) {
     return (
       <>
-        Signed in as {session.user?.email} <br />
+        Signed in as {activeSession.user?.email} <br />
         <button onClick={() => signOut()}>Sign out</button>
       </>
-    )
+    );
   }
+
   return (
     <>
       Not signed in <br />
       <button onClick={() => signIn()}>Sign in</button>
     </>
-  )
+  );
 }
