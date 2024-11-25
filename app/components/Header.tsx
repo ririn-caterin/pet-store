@@ -3,9 +3,9 @@ import Link from "next/link";
 
 const Header = () => {
   const menuItems = [
-    { label: "About", path: "/about" },
-    { label: "Services", path: "/services" },
+    { label: "Home", path: "/" },
     { label: "Shop", path: "/shop" },
+    { label: "Services", path: "/services" },
     { label: "Contact", path: "/contact" },
   ];
 
