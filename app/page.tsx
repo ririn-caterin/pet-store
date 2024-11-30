@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getServerSession } from "next-auth";
-import { authOption } from "@/app/api/auth/[...nextauth]/route";
+import { authOption } from "../app/api/auth/[...nextauth]/route";
 import Header from "./components/Header";
 
 const Home = async () => {

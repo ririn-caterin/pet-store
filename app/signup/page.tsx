@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -15,14 +15,14 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Sign Up</h1>
         <form onSubmit={handleSubmit}>
           <label className="block mb-1">Email:</label>
           <input
             type="email"
             className="w-full p-2 mb-4 border rounded-md"
-            placeholder="Input Your Email"
             value={email}
+            placeholder="Input Your Email"
             onChange={(e) => setEmail(e.target.value)}
             required
           />
@@ -31,8 +31,8 @@ export default function LoginPage() {
           <input
             type="password"
             className="w-full p-2 mb-4 border rounded-md"
-            placeholder="Input Your Password"
             value={password}
+            placeholder="Input Your Password"
             onChange={(e) => setPassword(e.target.value)}
             required
           />
@@ -42,15 +42,8 @@ export default function LoginPage() {
           </button>
         </form>
         <p className="mt-4 text-center text-sm">
-          <Link href="/signup" className="text-blue-500 hover:underline">
-            Create an Account
-          </Link>
-          <span className="mx-2">|</span>
-          <Link
-            href="/forgot-password"
-            className="text-blue-500 hover:underline"
-          >
-            Forgot Password?
+          <Link href="/login" className="text-blue-500 hover:underline">
+            Already have an account? Login here
           </Link>
         </p>
       </div>

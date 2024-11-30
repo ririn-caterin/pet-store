@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
     const currentUser = request.cookies.get('next-auth.session-token')?.value;
-    const protectedPages = ['/about'];
+    const protectedPages = ['/services'];
     const loginPage = '/login';
     const { pathname } = request.nextUrl;
 
