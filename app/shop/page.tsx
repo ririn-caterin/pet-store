@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import Header from "../components/Header";
 import ProductCard from "../components/ProductCard";
 import useSWR from "swr";
@@ -19,13 +20,18 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 
 const Page = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [query, setQuery] = useState("");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const queryFromUrl = searchParams.get("query") || "";
+  const [query, setQuery] = useState(queryFromUrl);
 
   if (!apiKey || !supabaseUrl) {
     throw new Error("Supabase environment variables are missing.");
   }
 
-  const fetcher = (url: string | URL | Request) =>
+  const fetcher = (url: string) =>
     fetch(url, {
       method: "GET",
       headers: {
@@ -45,23 +51,42 @@ const Page = () => {
     isLoading,
   } = useSWR(
     query
-      ? `${supabaseUrl}/rest/v1/pet-products?name=ilike.*${query}*`
-      : `${supabaseUrl}/rest/v1/pet-products`,
-    fetcher
+      ? `${supabaseUrl}/rest/v1/petshop_products?product_name=ilike.*${query}*`
+      : `${supabaseUrl}/rest/v1/petshop_products`,
+    fetcher,
+    {
+      dedupingInterval: 5000,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setQuery(searchKeyword);
+  const updateQueryParams = (newQuery: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (newQuery) {
+      params.set("query", newQuery);
+    } else {
+      params.delete("query");
     }
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleSearch = () => {
     setQuery(searchKeyword);
+    updateQueryParams(searchKeyword);
   };
 
-  console.log(searchKeyword);
-  console.log(query);
+  const handleReset = () => {
+    setQuery("");
+    setSearchKeyword("");
+    updateQueryParams("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <div>
@@ -71,30 +96,40 @@ const Page = () => {
         <div className="my-5 flex items-center">
           <input
             type="text"
+            value={searchKeyword}
             placeholder="Search product here..."
             className="border px-4 py-2 w-[300px] rounded-md mr-2"
             onChange={(e) => setSearchKeyword(e.target.value)}
             onKeyDown={handleKeyDown}
           />
+          {query && (
+            <p
+              className="text-red-600 cursor-pointer ml-2"
+              onClick={handleReset}
+            >
+              CLEAR
+            </p>
+          )}
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded-md"
+            className="bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
             onClick={handleSearch}
           >
-            <Search />
+            <Search className="mr-1" />
+            Search
           </button>
         </div>
         {error ? (
-          <div>failed to load</div>
+          <div>Failed to load</div>
         ) : isLoading ? (
-          <div>loading...</div>
-        ) : products.length > 0 ? (
+          <div>Loading...</div>
+        ) : products && products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {products.map((product: Product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
-          <p>Tidak ada produk tersedia.</p>
+          <p>No products available.</p>
         )}
       </div>
     </div>
