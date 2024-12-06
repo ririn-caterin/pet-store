@@ -88,12 +88,12 @@ const Header = () => {
                 ))}
               </ul>
               <div className="p-4">
-                <button
-                  className="bg-green-500 text-white w-full py-2 rounded hover:bg-green-600"
-                  onClick={() => alert("Menuju halaman checkout")}
+                <Link
+                  className="block text-center bg-green-500 text-white w-full py-2 rounded hover:bg-green-600"
+                  href="/checkout"
                 >
                   Checkout
-                </button>
+                </Link>
               </div>
             </div>
           )}
