@@ -6,9 +6,9 @@ type Params = {
   id: number;
 };
 
-const baseUrl = process.env.NEXTAUTH_URL;
 const apiKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY ?? "";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+export const revalidate = 86400;
 
 const Page = async ({ params }: { params: Params }) => {
   const { id } = await params;
@@ -18,7 +18,7 @@ const Page = async ({ params }: { params: Params }) => {
       apikey: apiKey,
       Authorization: `Bearer ${apiKey}`,
     },
-    cache: "no-store",
+    cache: "force-cache",
   });
 
   const productDetailArray = await res.json();
