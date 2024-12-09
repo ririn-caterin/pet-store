@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import ProductCard from "../components/ProductCard";
 import useSWR from "swr";
 import { Search } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 type Product = {
   id: string;
@@ -19,7 +20,9 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 
 const Page = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [query, setQuery] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("query") || "";
 
   if (!apiKey || !supabaseUrl) {
     throw new Error("Supabase environment variables are missing.");
@@ -40,28 +43,36 @@ const Page = () => {
     });
 
   const {
-    data: products,
+    data: products = [],
     error,
     isLoading,
+    mutate,
   } = useSWR(
     query
       ? `${supabaseUrl}/rest/v1/pet-products?name=ilike.*${query}*`
       : `${supabaseUrl}/rest/v1/pet-products`,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
+
+  const handleSearch = () => {
+    mutate(
+      fetcher(
+        `${supabaseUrl}/rest/v1/pet-products?name=ilike.*${searchKeyword}*`
+      ),
+      { revalidate: false }
+    );
+    router.replace(`?query=${searchKeyword}`);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setQuery(searchKeyword);
+      handleSearch();
     }
   };
-
-  const handleSearch = () => {
-    setQuery(searchKeyword);
-  };
-
-  console.log(searchKeyword);
-  console.log(query);
 
   return (
     <div>
@@ -73,6 +84,7 @@ const Page = () => {
             type="text"
             placeholder="Search product here..."
             className="border px-4 py-2 w-[300px] rounded-md mr-2"
+            value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
             onKeyDown={handleKeyDown}
           />
