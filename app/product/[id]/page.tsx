@@ -27,7 +27,7 @@ const Page = async ({ params }: { params: Params }) => {
   return (
     <div>
       <Header />
-      <div className="p-10">
+      <div className="py-10 mx-auto max-w-6xl">
         {res && !res.ok ? (
           <div>Product not found.</div>
         ) : productDetail ? (
