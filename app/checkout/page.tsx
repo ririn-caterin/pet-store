@@ -5,13 +5,6 @@ import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { Trash2 } from "lucide-react";
 
-type CartItem = {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-};
-
 const Page = () => {
   const { cart, removeFromCart } = useCart();
   const [showModal, setShowModal] = useState(false);

@@ -77,7 +77,7 @@ const Page = () => {
   return (
     <div>
       <Header />
-      <div className="p-10">
+      <div className="py-10 mx-auto max-w-6xl">
         <h1 className="text-2xl font-bold mb-6">Daftar Produk</h1>
         <div className="my-5 flex items-center">
           <input
