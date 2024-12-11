@@ -40,7 +40,7 @@ const Page = () => {
   return (
     <div>
       <Header />
-      <div className="p-10">
+      <div className="py-10 mx-auto max-w-6xl">
         <h1 className="text-2xl font-bold mb-4">Checkout</h1>
 
         <div className="flex flex-col md:flex-row gap-8 md:gap-16 mx-auto py-8">
