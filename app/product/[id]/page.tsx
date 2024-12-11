@@ -1,10 +1,11 @@
 import Header from "../../components/Header";
 import Image from "next/image";
 import AddToCart from "../../components/AddToCart";
+import ProductReview from "@/app/components/ProductReview";
 
-type Params = {
-  id: number;
-};
+type Params = Promise<{
+  id: string;
+}>;
 
 const apiKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY ?? "";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
@@ -12,7 +13,9 @@ export const revalidate = 86400;
 
 const Page = async ({ params }: { params: Params }) => {
   const { id } = await params;
+  const idProduct = parseInt(id, 10);
 
+  // fetch product detail
   const res = await fetch(`${supabaseUrl}/rest/v1/pet-products?id=eq.${id}`, {
     headers: {
       apikey: apiKey,
@@ -56,6 +59,8 @@ const Page = async ({ params }: { params: Params }) => {
         ) : (
           <div>Loading...</div>
         )}
+
+        <ProductReview productId={idProduct} />
       </div>
     </div>
   );
