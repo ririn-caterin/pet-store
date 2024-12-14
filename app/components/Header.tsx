@@ -22,7 +22,6 @@ const Header = () => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
-  const [searching, setSearching] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const router = useRouter();
 
