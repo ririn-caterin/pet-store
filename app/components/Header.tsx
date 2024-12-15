@@ -5,6 +5,7 @@ import {
   ShoppingBasket,
   Trash2,
   CircleUserRound,
+  Search,
 } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -12,6 +13,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const { cart, removeFromCart } = useCart();
@@ -19,6 +21,9 @@ const Header = () => {
   const [isCartVisible, setCartVisible] = useState(false);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const router = useRouter();
 
   const handleLogout = () => {
     signOut();
@@ -33,6 +38,17 @@ const Header = () => {
 
   const toggleCart = () => {
     setCartVisible((prev) => !prev);
+  };
+
+  const handleSearch = () => {
+    setSearchKeyword(searchKeyword);
+    router.push(`/search?q=${searchKeyword}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
 
   return (
@@ -65,6 +81,23 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-4">
+          {/* Search Product */}
+          <div className="flex items-center">
+            <input
+              type="text"
+              placeholder="Search product here..."
+              className="border px-4 py-2 w-[300px] rounded-md mr-2"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded-md"
+              onClick={handleSearch}
+            >
+              <Search />
+            </button>
+          </div>
           {/* User Account Dropdown */}
           <div className="relative">
             <button
